@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Web Open Arduino Controller
 
-## Getting Started
+Progressive Web App for controlling Arduino over **BLE**, **Classic Bluetooth**, **USB Serial**, and a **Wi‑Fi remote bridge**.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 · React 19 · TypeScript · Tailwind CSS 4
+- Zustand · Framer Motion · PWA
+- Docker · Nginx (HTTPS) · WebSocket share bridge
+
+## Transport architecture
+
+| Mode | Use for |
+|------|---------|
+| **BLE** | HM-10, ESP32 BLE UART (NUS) |
+| **Classic BT** | HC-05 / HC-06 after pairing in the OS |
+| **USB Serial** | USB-TTL adapters |
+| **Remote share** | Phone joins a desktop host via room code |
+
+UI talks to `ITransport` only — new transports plug in without UI changes.
+
+## Quick start
 
 ```bash
+cp .env.example .env
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Browser support
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Chrome / Edge / Android Chrome (HTTPS or localhost) — BLE + Web Serial
+- **iPhone / iPad Safari** — use [Remote bridge mode](./docs/IPHONE.md)
+- Safari / Firefox desktop: USB Serial or Remote share where available
 
-## Learn More
+## Features
 
-To learn more about Next.js, take a look at the following resources:
+- Scan & connect, disconnect, auto-reconnect, live status
+- Serial terminal with timestamps, auto-scroll, clear, export
+- Controller widgets: buttons, switches, PWM, joystick, RGB, servo, keypad, D-pad, voice
+- Sensor cards and live sparklines
+- Automation IF/THEN rules + daily schedules (this session)
+- Arduino code generator + sample sketches in `/arduino`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run dev          # Next + bridge + /bridge proxy
+npm run build        # production build
+npm run start        # start production server
+npm test             # unit tests
+```
 
-## Deploy on Vercel
+## Documentation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [Deployment guide](./docs/DEPLOYMENT.md)
+- [iPhone / remote](./docs/IPHONE.md)
+- [Protocol reference](./docs/PROTOCOL.md)
+- [Architecture](./docs/ARCHITECTURE.md)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT

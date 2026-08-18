@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+/node_modules.broken
+/_nm_broken
 /.pnp
 .pnp.*
 .yarn/*
@@ -15,7 +17,16 @@
 
 # next.js
 /.next/
+/.next-local/
 /out/
+
+# PWA generated
+/public/sw.js
+/public/sw.js.map
+/public/workbox-*.js
+/public/workbox-*.js.map
+/public/swe-worker-*.js
+/public/fallback-*.js
 
 # production
 /build
@@ -23,6 +34,8 @@
 # misc
 .DS_Store
 *.pem
+*.db
+*.db-journal
 
 # debug
 npm-debug.log*
@@ -31,7 +44,10 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
-.env*
+.env
+.env.local
+.env.*.local
+!.env.example
 
 # vercel
 .vercel
