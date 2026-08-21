@@ -10,6 +10,16 @@ function lanDevOrigins() {
       if (v4 && !a.internal) hosts.push(a.address);
     }
   }
+  // Allow the dev server to be reached through remote tunnels (Cloudflare Tunnel,
+  // ngrok) so BLE/Serial work over HTTPS from other devices. Next.js otherwise
+  // rejects cross-origin dev/HMR requests from these hosts. Extra origins can be
+  // added via DEV_ALLOWED_ORIGINS (comma-separated).
+  hosts.push("*.trycloudflare.com", "*.ngrok-free.app", "*.ngrok.app", "*.ngrok.io");
+  const extra = (process.env.DEV_ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  hosts.push(...extra);
   return hosts;
 }
 
