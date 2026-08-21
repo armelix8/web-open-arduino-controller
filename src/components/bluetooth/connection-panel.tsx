@@ -142,7 +142,7 @@ export function ConnectionPanel() {
     <Card>
       <CardHeader>
         <CardTitle>
-          {isIos ? "iPhone Remote" : "Bluetooth Connection"}
+          {isIos ? "iPhone Remote" : "Device Connection"}
         </CardTitle>
         <CardDescription>
           {isIos

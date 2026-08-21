@@ -37,12 +37,13 @@ const nextConfig: NextConfig = {
   // next-pwa injects webpack; Next 16 defaults to Turbopack — use `next build --webpack`
   turbopack: {},
   redirects: async () => [
-    { source: "/dashboard", destination: "/bluetooth", permanent: false },
-    { source: "/projects", destination: "/bluetooth", permanent: false },
-    { source: "/settings", destination: "/bluetooth", permanent: false },
-    { source: "/login", destination: "/bluetooth", permanent: false },
-    { source: "/admin", destination: "/bluetooth", permanent: false },
-    { source: "/profile", destination: "/bluetooth", permanent: false },
+    { source: "/dashboard", destination: "/connect", permanent: false },
+    { source: "/projects", destination: "/connect", permanent: false },
+    { source: "/settings", destination: "/connect", permanent: false },
+    { source: "/login", destination: "/connect", permanent: false },
+    { source: "/admin", destination: "/connect", permanent: false },
+    { source: "/profile", destination: "/connect", permanent: false },
+    { source: "/bluetooth", destination: "/connect", permanent: false },
   ],
   headers: async () => [
     {

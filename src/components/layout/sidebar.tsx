@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import {
-  Bluetooth,
+  Plug,
   Gamepad2,
   Activity,
   Zap,
@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import { useConnectionStore } from "@/lib/store/connection";
 
 const nav = [
-  { href: "/bluetooth", label: "Bluetooth", icon: Bluetooth },
+  { href: "/connect", label: "Connect", icon: Plug },
   { href: "/controller", label: "Controller", icon: Gamepad2 },
   { href: "/sensors", label: "Sensors", icon: Activity },
   { href: "/automation", label: "Automation", icon: Zap },
@@ -62,7 +62,7 @@ export function Sidebar() {
         )}
       >
         <div className="border-b border-white/10 px-5 py-6">
-          <Link href="/bluetooth" className="block" onClick={() => setOpen(false)}>
+          <Link href="/connect" className="block" onClick={() => setOpen(false)}>
             <div className="text-xs uppercase tracking-[0.2em] text-cyan-400/80">
               Industrial PWA
             </div>
