@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useConnectionStore } from "@/lib/store/connection";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 
 const nav = [
   { href: "/connect", label: "Connect", icon: Plug },
@@ -109,6 +110,13 @@ export function Sidebar() {
             );
           })}
         </nav>
+
+        <div className="border-t border-white/10 p-3">
+          <div className="mb-2 px-1 text-[11px] uppercase tracking-wide text-slate-500">
+            Mode
+          </div>
+          <ModeToggle />
+        </div>
       </aside>
 
       {open && (
