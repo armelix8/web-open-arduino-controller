@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { InfoHint } from "@/components/ui/info-hint";
 import { useConnectionStore } from "@/lib/store/connection";
 import { useUiMode } from "@/lib/store/ui-mode";
+import { useMounted } from "@/lib/use-mounted";
 import { HELP } from "@/lib/help-text";
 import { PROTOCOL_COMMANDS, mapVoiceToCommand } from "@/lib/protocol";
 import {
@@ -60,7 +61,8 @@ function Section({
 export function ControllerDashboard() {
   const send = useConnectionStore((s) => s.send);
   const status = useConnectionStore((s) => s.status);
-  const connected = status === "connected";
+  const mounted = useMounted();
+  const connected = mounted && status === "connected";
   const mode = useUiMode((s) => s.mode);
   const advanced = mode === "advanced";
   const [pwm, setPwm] = useState(128);

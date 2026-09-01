@@ -8,9 +8,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { useConnectionStore } from "@/lib/store/connection";
+import { useMounted } from "@/lib/use-mounted";
 import { downloadText } from "@/lib/utils";
 
 export function SerialTerminal() {
+  const mounted = useMounted();
   const terminal = useConnectionStore((s) => s.terminal);
   const autoScroll = useConnectionStore((s) => s.autoScroll);
   const setAutoScroll = useConnectionStore((s) => s.setAutoScroll);
@@ -20,6 +22,9 @@ export function SerialTerminal() {
   const status = useConnectionStore((s) => s.status);
   const [cmd, setCmd] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
+  // Only reflect the live connection state after mount so SSR and the first
+  // client render agree (avoids a hydration mismatch on the disabled attribute).
+  const controlsDisabled = !mounted || status !== "connected";
 
   useEffect(() => {
     if (autoScroll) endRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -92,9 +97,9 @@ export function SerialTerminal() {
             value={cmd}
             onChange={(e) => setCmd(e.target.value)}
             placeholder="Send command…"
-            disabled={status !== "connected"}
+            disabled={controlsDisabled}
           />
-          <Button type="submit" disabled={status !== "connected"}>
+          <Button type="submit" disabled={controlsDisabled}>
             Send
           </Button>
         </form>
