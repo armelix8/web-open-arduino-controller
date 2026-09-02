@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input, Label } from "@/components/ui/input";
 import { useConnectionStore } from "@/lib/store/connection";
+import { useMounted } from "@/lib/use-mounted";
 import { useEffect, useState } from "react";
 
 type CustomCmd = {
@@ -27,6 +28,8 @@ type Form = {
 export function CustomCommands() {
   const send = useConnectionStore((s) => s.send);
   const status = useConnectionStore((s) => s.status);
+  const mounted = useMounted();
+  const connected = mounted && status === "connected";
   const [items, setItems] = useState<CustomCmd[]>([]);
 
   useEffect(() => {
@@ -120,7 +123,7 @@ export function CustomCommands() {
             <Button
               key={item.id}
               style={{ background: item.color, color: "#041016" }}
-              disabled={status !== "connected"}
+              disabled={!connected}
               onClick={async () => {
                 try {
                   await send(item.command);
