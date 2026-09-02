@@ -6,7 +6,9 @@ function lanDevOrigins() {
   const hosts = ["localhost", "127.0.0.1", "*.local"];
   for (const addrs of Object.values(os.networkInterfaces())) {
     for (const a of addrs || []) {
-      const v4 = a.family === "IPv4" || a.family === 4;
+      // Node <18 typed `family` as the number 4; newer versions use "IPv4".
+      const family = a.family as string | number;
+      const v4 = family === "IPv4" || family === 4;
       if (v4 && !a.internal) hosts.push(a.address);
     }
   }
