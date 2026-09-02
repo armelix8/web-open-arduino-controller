@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input, Label } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { InfoHint } from "@/components/ui/info-hint";
+import { BluetoothSettingsButton } from "@/components/bluetooth/bluetooth-settings-button";
 import { useConnectionStore } from "@/lib/store/connection";
 import { useUiMode } from "@/lib/store/ui-mode";
 import { HELP, type HelpKey } from "@/lib/help-text";
@@ -263,9 +264,10 @@ export function ConnectionPanel() {
               <li>Tap Scan &amp; Connect and choose that Bluetooth serial port</li>
             </ol>
             <p className="mt-2 text-slate-500">
-              Browsers cannot scan classic BT like BLE — pair in Windows first.
+              Browsers cannot scan classic BT like BLE — pair in your OS first.
               If the SPP list is empty, choose <span className="text-slate-300">USB Serial</span> and pick the Bluetooth COM port.
             </p>
+            <BluetoothSettingsButton className="mt-3" />
           </div>
         )}
 
