@@ -11,6 +11,30 @@
 
 Bluetooth never goes through your server — only the website and optional share bridge do.
 
+## Git branches
+
+| Branch | Role |
+|--------|------|
+| `live` | **Production.** This is what the live host runs. Do not commit here. |
+| `master` | Default integration branch. |
+| Feature branches | Day-to-day edits. Open a PR, then promote to `live` only when you intend to ship. |
+
+`live` is a long-lived branch, not a throwaway. It is created from the commit that is actually serving Open Connect.
+
+**Do**
+
+- Edit on a feature branch (or `master`).
+- Open a pull request into `live` when a change is ready for the live site.
+- Deploy by checking out `origin/live` on the host (`deploy/sync-from-live.sh`).
+
+**Do not**
+
+- Commit directly to `live`.
+- Force-push `live`.
+- Mix unfinished work onto `live`.
+
+Current production host: `openconnect.ur.ac.rw` (hostname `openconnect`). Source checkout on the host: `/opt/openconnect/src` (tracks `origin/live`).
+
 ## Prerequisites
 
 - Docker & Docker Compose

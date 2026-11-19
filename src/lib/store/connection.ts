@@ -191,7 +191,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
   device: null,
   support: null,
   terminal: [],
-  autoScroll: true,
+  autoScroll: false,
   sensors: {},
   automationRules: [],
   connectedDurationMs: 0,

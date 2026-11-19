@@ -1,23 +1,36 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, IBM_Plex_Mono, Syne } from "next/font/google";
+import localFont from "next/font/local";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
-const display = Syne({
+const display = localFont({
+  src: [
+    { path: "../fonts/syne-500.woff2", weight: "500", style: "normal" },
+    { path: "../fonts/syne-600.woff2", weight: "600", style: "normal" },
+    { path: "../fonts/syne-700.woff2", weight: "700", style: "normal" },
+  ],
   variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  display: "swap",
 });
 
-const body = Space_Grotesk({
+const body = localFont({
+  src: [
+    { path: "../fonts/space-grotesk-400.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/space-grotesk-500.woff2", weight: "500", style: "normal" },
+    { path: "../fonts/space-grotesk-600.woff2", weight: "600", style: "normal" },
+    { path: "../fonts/space-grotesk-700.woff2", weight: "700", style: "normal" },
+  ],
   variable: "--font-body",
-  subsets: ["latin"],
+  display: "swap",
 });
 
-const mono = IBM_Plex_Mono({
+const mono = localFont({
+  src: [
+    { path: "../fonts/ibm-plex-mono-400.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/ibm-plex-mono-500.woff2", weight: "500", style: "normal" },
+  ],
   variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {

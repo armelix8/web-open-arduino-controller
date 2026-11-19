@@ -2,7 +2,7 @@
   "name": "Web Open Arduino Controller",
   "short_name": "Open Arduino",
   "description": "Control Arduino over BLE, Classic Bluetooth, USB Serial, or a remote bridge",
-  "start_url": "/bluetooth",
+  "start_url": "/connect",
   "scope": "/",
   "display": "standalone",
   "display_override": ["standalone", "browser"],

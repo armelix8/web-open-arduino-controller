@@ -6,10 +6,22 @@ function lanDevOrigins() {
   const hosts = ["localhost", "127.0.0.1", "*.local"];
   for (const addrs of Object.values(os.networkInterfaces())) {
     for (const a of addrs || []) {
-      const v4 = a.family === "IPv4" || a.family === 4;
+      // Node <18 typed `family` as the number 4; newer versions use "IPv4".
+      const family = a.family as string | number;
+      const v4 = family === "IPv4" || family === 4;
       if (v4 && !a.internal) hosts.push(a.address);
     }
   }
+  // Allow the dev server to be reached through remote tunnels (Cloudflare Tunnel,
+  // ngrok) so BLE/Serial work over HTTPS from other devices. Next.js otherwise
+  // rejects cross-origin dev/HMR requests from these hosts. Extra origins can be
+  // added via DEV_ALLOWED_ORIGINS (comma-separated).
+  hosts.push("*.trycloudflare.com", "*.ngrok-free.app", "*.ngrok.app", "*.ngrok.io");
+  const extra = (process.env.DEV_ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  hosts.push(...extra);
   return hosts;
 }
 
@@ -37,12 +49,13 @@ const nextConfig: NextConfig = {
   // next-pwa injects webpack; Next 16 defaults to Turbopack — use `next build --webpack`
   turbopack: {},
   redirects: async () => [
-    { source: "/dashboard", destination: "/bluetooth", permanent: false },
-    { source: "/projects", destination: "/bluetooth", permanent: false },
-    { source: "/settings", destination: "/bluetooth", permanent: false },
-    { source: "/login", destination: "/bluetooth", permanent: false },
-    { source: "/admin", destination: "/bluetooth", permanent: false },
-    { source: "/profile", destination: "/bluetooth", permanent: false },
+    { source: "/dashboard", destination: "/connect", permanent: false },
+    { source: "/projects", destination: "/connect", permanent: false },
+    { source: "/settings", destination: "/connect", permanent: false },
+    { source: "/login", destination: "/connect", permanent: false },
+    { source: "/admin", destination: "/connect", permanent: false },
+    { source: "/profile", destination: "/connect", permanent: false },
+    { source: "/bluetooth", destination: "/connect", permanent: false },
   ],
   headers: async () => [
     {

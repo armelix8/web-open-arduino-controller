@@ -14,9 +14,58 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Input, Label } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { InfoHint } from "@/components/ui/info-hint";
+import { BluetoothSettingsButton } from "@/components/bluetooth/bluetooth-settings-button";
 import { useConnectionStore } from "@/lib/store/connection";
+import { useUiMode } from "@/lib/store/ui-mode";
+import { HELP, type HelpKey } from "@/lib/help-text";
 import { formatDuration } from "@/lib/utils";
 import type { TransportKind } from "@/lib/transport";
+
+/** Beginner-friendly, one-line description for each connection method. */
+const METHOD_INFO: Array<{
+  emoji: string;
+  title: string;
+  desc: string;
+  recommended?: boolean;
+  hint?: HelpKey;
+}> = [
+  {
+    emoji: "🔌",
+    title: "USB Serial",
+    desc: "Connect your Arduino using a USB cable.",
+    recommended: true,
+    hint: "serial",
+  },
+  {
+    emoji: "📶",
+    title: "Bluetooth / BLE",
+    desc: "Connect wirelessly to supported boards.",
+    hint: "ble",
+  },
+  {
+    emoji: "📡",
+    title: "Wi‑Fi",
+    desc: "Connect to your Arduino over a network.",
+  },
+];
+
+/** Maps the live connection status to a clear, emoji-coded label. */
+function statusLabel(status: string): string {
+  switch (status) {
+    case "connected":
+      return "🟢 Connected";
+    case "scanning":
+    case "connecting":
+      return "🟡 Connecting…";
+    case "reconnecting":
+      return "🟠 Reconnecting…";
+    case "error":
+      return "🔴 Connection error";
+    default:
+      return "🔴 Disconnected";
+  }
+}
 
 export function ConnectionPanel() {
   const [ready, setReady] = useState(false);
@@ -39,6 +88,7 @@ export function ConnectionPanel() {
   const initSupport = useConnectionStore((s) => s.initSupport);
   const rehydrate = useConnectionStore((s) => s.rehydrate);
   const connectedDurationMs = useConnectionStore((s) => s.connectedDurationMs);
+  const mode = useUiMode((s) => s.mode);
 
   useEffect(() => {
     initSupport();
@@ -142,7 +192,7 @@ export function ConnectionPanel() {
     <Card>
       <CardHeader>
         <CardTitle>
-          {isIos ? "iPhone Remote" : "Bluetooth Connection"}
+          {isIos ? "iPhone Remote" : "Device Connection"}
         </CardTitle>
         <CardDescription>
           {isIos
@@ -151,6 +201,35 @@ export function ConnectionPanel() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2.5">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-white">
+              {statusLabel(status)}
+            </span>
+            {status === "connected" && device?.name && (
+              <span className="truncate text-xs text-slate-400">
+                · {device.name}
+              </span>
+            )}
+          </div>
+          {status === "connected" || status === "reconnecting" ? (
+            <Button size="sm" variant="danger" onClick={handleDisconnect}>
+              <Unplug size={14} />
+              Disconnect
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              onClick={handleConnect}
+              disabled={connectDisabled}
+            >
+              {status === "scanning" || status === "connecting"
+                ? "Connecting…"
+                : "Connect"}
+            </Button>
+          )}
+        </div>
+
         {ready && isIos && (
           <div className="rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-4 py-3 text-sm text-cyan-50">
             <p className="font-medium">On your PC first</p>
@@ -185,14 +264,15 @@ export function ConnectionPanel() {
               <li>Tap Scan &amp; Connect and choose that Bluetooth serial port</li>
             </ol>
             <p className="mt-2 text-slate-500">
-              Browsers cannot scan classic BT like BLE — pair in Windows first.
+              Browsers cannot scan classic BT like BLE — pair in your OS first.
               If the SPP list is empty, choose <span className="text-slate-300">USB Serial</span> and pick the Bluetooth COM port.
             </p>
+            <BluetoothSettingsButton className="mt-3" />
           </div>
         )}
 
         {modes.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {modes.map((m) => (
               <Button
                 key={m.kind}
@@ -205,7 +285,37 @@ export function ConnectionPanel() {
                 {m.icon === "classic" && <Bluetooth size={14} />}
                 {m.icon === "serial" && <Cable size={14} />}
                 {m.label}
+                {m.kind === "web-serial" && (
+                  <span className="ml-1 rounded bg-emerald-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-300">
+                    Recommended
+                  </span>
+                )}
               </Button>
+            ))}
+          </div>
+        )}
+
+        {mode === "beginner" && (
+          <div className="space-y-2 rounded-xl border border-white/10 bg-black/20 p-3">
+            <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+              Connection methods
+            </div>
+            {METHOD_INFO.map((m) => (
+              <div key={m.title} className="flex items-start gap-2 text-sm">
+                <span aria-hidden className="mt-0.5">
+                  {m.emoji}
+                </span>
+                <div>
+                  <span className="font-medium text-slate-200">{m.title}</span>
+                  {m.hint && <InfoHint className="ml-1" label={m.title} text={HELP[m.hint]} />}
+                  {m.recommended && (
+                    <span className="ml-1.5 rounded bg-emerald-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-300">
+                      Recommended for beginners
+                    </span>
+                  )}
+                  <p className="text-xs text-slate-400">{m.desc}</p>
+                </div>
+              </div>
             ))}
           </div>
         )}
@@ -227,21 +337,23 @@ export function ConnectionPanel() {
                 Phone: enter that exact room code, then Connect Remote.
               </p>
             </div>
-            <div className="space-y-2">
-              <Label>Bridge URL</Label>
-              <Input
-                value={bridgeUrl}
-                onChange={(e) => setBridgeUrl(e.target.value)}
-                placeholder="ws://…/bridge"
-                inputMode="url"
-                autoCapitalize="off"
-                autoCorrect="off"
-              />
-              <p className="text-xs text-slate-500">
-                Defaults to same-origin <code className="text-slate-400">/bridge</code>{" "}
-                (works on phone without opening port 3001).
-              </p>
-            </div>
+            {mode === "advanced" && (
+              <div className="space-y-2">
+                <Label>Bridge URL</Label>
+                <Input
+                  value={bridgeUrl}
+                  onChange={(e) => setBridgeUrl(e.target.value)}
+                  placeholder="ws://…/bridge"
+                  inputMode="url"
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                />
+                <p className="text-xs text-slate-500">
+                  Defaults to same-origin <code className="text-slate-400">/bridge</code>{" "}
+                  (works on phone without opening port 3001).
+                </p>
+              </div>
+            )}
           </div>
         )}
 

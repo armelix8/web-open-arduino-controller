@@ -53,6 +53,16 @@ npm run start        # start production server
 npm test             # unit tests
 ```
 
+## Branches
+
+| Branch | Role |
+|--------|------|
+| `live` | Production. Matches the live Open Connect host. Do not commit here. |
+| `master` | Default integration branch. |
+| Feature branches | Edits and PRs. Promote into `live` only when shipping. |
+
+See [Deployment guide](./docs/DEPLOYMENT.md) for how to promote a change onto `live`.
+
 ## Documentation
 
 - [Deployment guide](./docs/DEPLOYMENT.md)

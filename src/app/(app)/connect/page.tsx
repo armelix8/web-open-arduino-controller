@@ -8,7 +8,7 @@ import { SerialTerminal } from "@/components/bluetooth/serial-terminal";
 
 
 
-export default function BluetoothPage() {
+export default function ConnectPage() {
 
   return (
 
@@ -24,13 +24,13 @@ export default function BluetoothPage() {
 
         <h1 className="page-title mt-2 text-3xl text-white md:text-4xl">
 
-          Bluetooth
+          Connect
 
         </h1>
 
         <p className="mt-2 text-slate-400">
 
-          Scan, connect, and exchange serial data with your Arduino.
+          Scan, connect, and exchange serial data with your Arduino over BLE, Classic Bluetooth, USB Serial, or Wi‑Fi remote.
 
         </p>
 
